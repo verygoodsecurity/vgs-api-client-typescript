@@ -13,6 +13,7 @@
 import { RequestFile } from './models';
 import { CreateAliasesRequestExisting } from './createAliasesRequestExisting';
 import { CreateAliasesRequestNew } from './createAliasesRequestNew';
+import { CreateAliasesRequestNew | CreateAliasesRequestExisting } from './createAliasesRequestNew | CreateAliasesRequestExisting';
 
 export class CreateAliasesRequest {
     'data': Array<CreateAliasesRequestNew | CreateAliasesRequestExisting>;
