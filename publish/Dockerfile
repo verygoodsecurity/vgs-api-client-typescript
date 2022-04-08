@@ -8,4 +8,4 @@ ENV LIB_VERSION=$LIB_VERSION
 
 WORKDIR /src
 
-ENTRYPOINT ["sh", "docker/build_and_publish.sh"]
+ENTRYPOINT ["sh", "publish/build_and_publish.sh"]
