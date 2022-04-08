@@ -1,5 +1,7 @@
 #!/bin/sh
 
+grep -rl XXX.YYY.ZZZ . | xargs sed -i "s/XXX.YYY.ZZZ/${LIB_VERSION}/g"
+
 # Build
 npm run build
 
