@@ -1,0 +1,32 @@
+{
+    "name": "@vgs/api-client",
+    "version": "XXX.YYY.ZZZ",
+    "description": "NodeJS client for @vgs/api-client",
+    "repository": "verygoodsecurity/vgs-api-client-node-ts",
+    "main": "api.js",
+    "types": "api.d.ts",
+    "scripts": {
+        "clean": "rm -Rf node_modules/ *.js",
+        "build": "tsc",
+        "test": "jest --verbose false"
+    },
+    "author": "OpenAPI-Generator Contributors",
+    "license": "Unlicense",
+    "dependencies": {
+        "bluebird": "^3.5.0",
+        "request": "^2.81.0",
+        "@types/bluebird": "*",
+        "@types/request": "*",
+        "rewire": "^3.0.2"
+    },
+    "devDependencies": {
+        "@types/jest": "^27.4.1",
+        "@types/node": "^17.0.23",
+        "jest": "^27.5.1",
+        "ts-jest": "^27.1.3",
+        "typescript": "^4.6.2"
+    },
+    "publishConfig": {
+        "registry": "https://registry.npmjs.org"
+    }
+}
