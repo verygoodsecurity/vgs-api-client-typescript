@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  build_and_publish:
+    build:
+      context: publish
+      args:
+        NPM_VGS_PUBLISH_TOKEN: ${NPM_VGS_PUBLISH_TOKEN}
+        LIB_VERSION: ${LIB_VERSION}
+    volumes:
+      - ./:/src/
+  test:
+    build:
+      context: .
+      dockerfile: test/Dockerfile

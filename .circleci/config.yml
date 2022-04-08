@@ -1,0 +1,50 @@
+job-defaults: &job-defaults
+  working_directory: &working_directory
+    ~/product
+  machine:
+    image: ubuntu-2004:202104-01
+    docker_layer_caching: true
+
+version: 2
+
+jobs:
+  test:
+    <<: *job-defaults
+    steps:
+      - checkout
+      - run: |
+          docker-compose build test
+          docker-compose run test
+
+  publish:
+    <<: *job-defaults
+    steps:
+      - checkout
+      - run: |
+          export LIB_VERSION=${CIRCLE_TAG}
+
+          docker-compose build build_and_publish
+          docker-compose run build_and_publish
+
+workflows:
+  version: 2
+
+  build-test-and-publish:
+    jobs:
+      - test:
+          context: circleci
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+$/
+
+      - publish:
+          context: circleci
+          requires:
+            - test
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+$/
