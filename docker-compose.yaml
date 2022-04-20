@@ -1,15 +1,32 @@
 version: '3.7'
 
 services:
-  build_and_publish:
+  assemble:
     build:
-      context: publish
-      args:
-        NPM_VGS_PUBLISH_TOKEN: ${NPM_VGS_PUBLISH_TOKEN}
-        LIB_VERSION: ${LIB_VERSION}
+      context: .
+      dockerfile: scripts/assemble/Dockerfile
+    environment:
+      LIB_VERSION: ${LIB_VERSION}
     volumes:
-      - ./:/src/
+      - ./:/vgs-api-client/
+  publish:
+    build:
+      context: .
+      dockerfile: scripts/publish/Dockerfile
+    environment:
+      ARTIFACT_REPOSITORY_TOKEN: ${ARTIFACT_REPOSITORY_TOKEN}
+      LIB_VERSION: ${LIB_VERSION}
+    volumes:
+      - ./:/vgs-api-client/
   test:
     build:
       context: .
-      dockerfile: test/Dockerfile
+      dockerfile: scripts/test/Dockerfile
+    environment:
+      VAULT_API_USERNAME: US7oyrzRGmaKqi3ET8eSsECS
+      VAULT_API_PASSWORD: c06cf6d1-a35e-439d-91d1-8bd04e5fd9e5
+      VAULT_API_BASE_URI: https://api.sandbox.verygoodvault.com
+      VAULT_API_VAULT_ID: tntkxfmsefj
+      LIB_VERSION: ${LIB_VERSION}
+    volumes:
+      - ./:/vgs-api-client/

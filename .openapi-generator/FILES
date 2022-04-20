@@ -1,5 +1,4 @@
 .gitignore
-.openapi-generator-ignore
 api.ts
 api/aliasesApi.ts
 api/apis.ts
@@ -8,8 +7,8 @@ model/alias.ts
 model/aliasFormat.ts
 model/apiError.ts
 model/createAliasesRequest.ts
-model/createAliasesRequestExisting.ts
 model/createAliasesRequestNew.ts
+model/createAliasesRequestReference.ts
 model/inlineResponse200.ts
 model/inlineResponse2001.ts
 model/inlineResponse201.ts
