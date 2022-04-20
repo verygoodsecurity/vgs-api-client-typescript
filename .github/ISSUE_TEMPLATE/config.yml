@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Very Good Security Knowledge Base
+    url: https://support.verygoodsecurity.com/main/s/
+    about: Our friendly, knowledgeable support engineers are here to help.
+  - name: Very Good Security Support
+    url: support@verygoodsecurity.com
+    about: If you have any questions, or encounter any issues, please contact us.

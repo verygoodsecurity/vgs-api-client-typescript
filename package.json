@@ -2,9 +2,9 @@
     "name": "@vgs/api-client",
     "version": "XXX.YYY.ZZZ",
     "description": "NodeJS client for @vgs/api-client",
-    "repository": "verygoodsecurity/vgs-api-client-node-ts",
-    "main": "api.js",
-    "types": "api.d.ts",
+    "repository": "verygoodsecurity/vgs-api-client-typescript",
+    "main": "vgs.js",
+    "types": "vgs.d.ts",
     "scripts": {
         "clean": "rm -Rf node_modules/ *.js",
         "build": "tsc",
