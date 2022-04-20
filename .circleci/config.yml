@@ -8,31 +8,47 @@ job-defaults: &job-defaults
 version: 2
 
 jobs:
-  test:
+  test-local:
     <<: *job-defaults
     steps:
       - checkout
       - run: |
-          docker-compose build test
-          docker-compose run test
+          ./scripts/run-tests.sh
+
+  test-e2e:
+    <<: *job-defaults
+    steps:
+      - checkout
+      - run: |
+          export LIB_VERSION="0.0.1.dev$(date "+%Y%m%d%H%M")" && \
+          ./scripts/publish.sh && \
+          ./scripts/run-tests-e2e.sh
 
   publish:
     <<: *job-defaults
     steps:
       - checkout
       - run: |
-          export LIB_VERSION=${CIRCLE_TAG}
-
-          docker-compose build build_and_publish
-          docker-compose run build_and_publish
+          export LIB_VERSION=${CIRCLE_TAG} && \
+          ./scripts/publish.sh
 
 workflows:
   version: 2
 
   build-test-and-publish:
     jobs:
-      - test:
+      - test-local:
           context: circleci
+          filters:
+            branches:
+              only: /.*/
+            tags:
+              only: /^\d+\.\d+\.\d+$/
+
+      - test-e2e:
+          context: circleci
+          requires:
+            - test-local
           filters:
             branches:
               only: /.*/
@@ -42,7 +58,7 @@ workflows:
       - publish:
           context: circleci
           requires:
-            - test
+            - test-e2e
           filters:
             branches:
               ignore: /.*/

@@ -11,25 +11,31 @@
  */
 
 import { RequestFile } from './models';
-import { ApiError } from './apiError';
+import { AliasFormat } from './aliasFormat';
 
-export class InlineResponseDefault {
+export class CreateAliasesRequestReference {
     /**
-    * List of errors that occurred while processing the request.
+    * Existing alias to use as a reference.
     */
-    'errors'?: Array<ApiError>;
+    'alias': string;
+    'format': AliasFormat;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "errors",
-            "baseName": "errors",
-            "type": "Array<ApiError>"
+            "name": "alias",
+            "baseName": "alias",
+            "type": "string"
+        },
+        {
+            "name": "format",
+            "baseName": "format",
+            "type": "AliasFormat"
         }    ];
 
     static getAttributeTypeMap() {
-        return InlineResponseDefault.attributeTypeMap;
+        return CreateAliasesRequestReference.attributeTypeMap;
     }
 }
 

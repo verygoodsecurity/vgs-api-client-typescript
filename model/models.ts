@@ -4,8 +4,8 @@ export * from './alias';
 export * from './aliasFormat';
 export * from './apiError';
 export * from './createAliasesRequest';
-export * from './createAliasesRequestExisting';
 export * from './createAliasesRequestNew';
+export * from './createAliasesRequestReference';
 export * from './inlineResponse200';
 export * from './inlineResponse2001';
 export * from './inlineResponse201';
@@ -31,8 +31,8 @@ import { Alias } from './alias';
 import { AliasFormat } from './aliasFormat';
 import { ApiError } from './apiError';
 import { CreateAliasesRequest } from './createAliasesRequest';
-import { CreateAliasesRequestExisting } from './createAliasesRequestExisting';
 import { CreateAliasesRequestNew } from './createAliasesRequestNew';
+import { CreateAliasesRequestReference } from './createAliasesRequestReference';
 import { InlineResponse200 } from './inlineResponse200';
 import { InlineResponse2001 } from './inlineResponse2001';
 import { InlineResponse201 } from './inlineResponse201';
@@ -55,14 +55,16 @@ let primitives = [
 
 let enumsMap: {[index: string]: any} = {
         "AliasFormat": AliasFormat,
+        "CreateAliasesRequestNew.StorageEnum": CreateAliasesRequestNew.StorageEnum,
+        "RevealedData.StorageEnum": RevealedData.StorageEnum,
 }
 
 let typeMap: {[index: string]: any} = {
     "Alias": Alias,
     "ApiError": ApiError,
     "CreateAliasesRequest": CreateAliasesRequest,
-    "CreateAliasesRequestExisting": CreateAliasesRequestExisting,
     "CreateAliasesRequestNew": CreateAliasesRequestNew,
+    "CreateAliasesRequestReference": CreateAliasesRequestReference,
     "InlineResponse200": InlineResponse200,
     "InlineResponse2001": InlineResponse2001,
     "InlineResponse201": InlineResponse201,
