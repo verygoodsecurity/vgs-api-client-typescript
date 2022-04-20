@@ -20,7 +20,7 @@ jobs:
     steps:
       - checkout
       - run: |
-          export LIB_VERSION="0.0.1.dev$(date "+%Y%m%d%H%M")" && \
+          export LIB_VERSION="0.0.1-dev$(date "+%Y%m%d%H%M")" && \
           ./scripts/publish.sh && \
           ./scripts/run-tests-e2e.sh
 

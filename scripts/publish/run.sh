@@ -1,11 +1,13 @@
 #!/bin/bash
 
-set -e
+set -ex
 
 usage() { echo "Required env var '$1' is missing"; exit 1; }
 
 [ -z "${ARTIFACT_REPOSITORY_TOKEN}" ] && usage "ARTIFACT_REPOSITORY_TOKEN" ;
 [ -z "${LIB_VERSION}" ] && usage "LIB_VERSION" ;
+
+mkdir -p dist/
 
 # Publish
 cp package.json dist/
