@@ -2,29 +2,12 @@
 
 set -e
 
-if [[ -n "${LIB_VERSION}" ]]; then
-  echo "Installing lib from npm ${LIB_VERSION} ..."
+echo "Installing lib from local sources"
+# fix version
+VERSION=0.0.1-alpha$(date "+%Y%m%d%H%M")
+grep -rl XXX.YYY.ZZZ . | xargs sed -i "s/XXX.YYY.ZZZ/$VERSION/g"
 
-  set +e
-  ATTEMPT=1
-  while [  $ATTEMPT -lt 60 ]; do
-    echo "Attempt ${ATTEMPT} ..."
+npm install
 
-    npm install vgs_api_client -v ${LIB_VERSION}
-
-    if [[ $? == 0 ]]; then
-      echo "Installed ${LIB_VERSION}"
-      break
-    fi
-
-    ATTEMPT=$((ATTEMPT+1))
-
-    sleep 5
-  done
-  set -e
-else
-  echo "Installing lib from local sources"
-  npm install
-fi
-
+echo "Running tests"
 npm test

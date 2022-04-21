@@ -1,12 +1,12 @@
-import {Aliases, ApiError, config} from "../vgs";
+import { VGS } from "../vgs";
 
 let api
 
 describe("aliasesAPI", () => {
 
   beforeEach(() => {
-    let _config = config(process.env.VAULT_API_USERNAME!, process.env.VAULT_API_PASSWORD!)
-    api = new Aliases(_config);
+    let _config = VGS.config(process.env.VAULT_API_USERNAME!, process.env.VAULT_API_PASSWORD!)
+    api = new VGS.Aliases(_config);
   });
 
 
@@ -21,8 +21,7 @@ describe("aliasesAPI", () => {
         "format": "UUID",
         "value": "Joe Doe",
         "storage": "VOLATILE"
-      },
-      ]
+      }]
 
       let aliases = await api.redact(data);
 
@@ -49,8 +48,7 @@ describe("aliasesAPI", () => {
         "format": "UUID",
         "value": "Joe Doe",
         "storage": "VOLATILE"
-      },
-      ]
+      }]
 
       let aliases = await api.redact(data).then(
           aliases => aliases.map(i => i["aliases"][0]["alias"])
@@ -97,7 +95,7 @@ describe("aliasesAPI", () => {
       );
       await api.delete(alias)
 
-      await expect(api.reveal(alias)).rejects.toThrow(ApiError)
+      await expect(api.reveal(alias)).rejects.toThrow(VGS.ApiError)
     })
   });
 
