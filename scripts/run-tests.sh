@@ -2,6 +2,5 @@
 
 set -e
 
-docker-compose build && \
-docker-compose run assemble && \
+docker-compose build test && \
 docker-compose run test
