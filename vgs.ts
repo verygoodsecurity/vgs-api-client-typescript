@@ -1,1 +1,1 @@
-export * from './vgs/aliasesApi';
+export * as VGS from './vgs/aliasesApi';
