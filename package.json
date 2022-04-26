@@ -1,7 +1,7 @@
 {
     "name": "@vgs/api-client",
     "version": "XXX.YYY.ZZZ",
-    "description": "NodeJS client for @vgs/api-client",
+    "description": "VGS API Client",
     "repository": "verygoodsecurity/vgs-api-client-typescript",
     "main": "vgs.js",
     "types": "vgs.d.ts",
@@ -10,8 +10,8 @@
         "build": "tsc",
         "test": "jest --verbose false"
     },
-    "author": "OpenAPI-Generator Contributors",
-    "license": "Unlicense",
+    "author": "Very Good Security",
+    "license": "BSD",
     "dependencies": {
         "bluebird": "^3.5.0",
         "request": "^2.81.0",
