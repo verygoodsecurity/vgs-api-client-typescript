@@ -49,6 +49,7 @@ export class Aliases {
 
     constructor(config: Configuration) {
         this._api = new AliasesApi(config.username, config.password, config.host);
+        this._api.defaultHeaders = {"User-Agent": "vgs-api-client/XXX.YYY.ZZZ/typescript"}
     }
 
     public async redact(data) {
