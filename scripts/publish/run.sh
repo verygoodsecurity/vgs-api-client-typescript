@@ -16,9 +16,17 @@ cp jest.config.js dist/
 cp tsconfig.json dist/
 cp LICENSE dist/
 cp README.md dist/
+cp VERSION dist/
+
+TAG_SUFFIX=latest
+
+if [[ ${LIB_VERSION} =~ alpha ]];
+then
+  TAG_SUFFIX=alpha
+fi
 
 pushd dist
   echo "//registry.npmjs.org/:_authToken=${ARTIFACT_REPOSITORY_TOKEN}" > .npmrc
   npm version "${LIB_VERSION}" || true
-  npm publish --access public --loglevel verbose
+  npm publish --access public --loglevel verbose --tag ${TAG_SUFFIX}
 popd
