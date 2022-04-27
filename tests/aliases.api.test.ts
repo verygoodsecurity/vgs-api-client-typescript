@@ -1,4 +1,4 @@
-import { VGS } from "../vgs";
+const VGS = require("../vgs");
 
 let api
 
