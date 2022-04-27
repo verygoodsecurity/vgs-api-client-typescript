@@ -13,6 +13,6 @@ ADD ./tsconfig.json /api-client/tsconfig.json
 
 WORKDIR /api-client/
 
-RUN grep -rl 'import { VGS } from "../vgs";' tests | xargs sed -i 's/import { VGS } from \"\.\.\/vgs\";/import { VGS } from \"\@vgs\/api-client\";/g'
+RUN grep -rl 'require("../vgs")' tests | xargs sed -i 's/require(\"\.\.\/vgs\")/require(\"\@vgs\/api-client\")/g'
 
 ENTRYPOINT ["bash", "./scripts/run.sh"]
