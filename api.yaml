@@ -1,0 +1,534 @@
+openapi: '3.0.0'
+info:
+  title: Vault HTTP API
+  description: |
+    The VGS Vault HTTP API is used for storing, retrieving, and managing sensitive data (aka Tokenization) within a VGS Vault.
+    
+    The VGS API is organized around REST. Our API is built with a predictable resource-oriented structure, uses JSON-encoded requests and responses, follows standard HTTP verbs/responses, and uses industry standard authentication.
+
+    ## What is VGS
+
+    Storing sensitive data on your company’s infrastructure often comes with a heavy compliance burden. For instance, storing payments data yourself greatly increases the amount of work needed to become PCI compliant. It also increases your security risk in general. To combat this, companies will minimize the amount of sensitive information they have to handle or store.
+
+    VGS provides multiple methods for minimizing the sensitive information that needs to be stored which allows customers to secure any type of data for any use-case.
+
+    **Tokenization** is a method that focuses on securing the storage of data. This is the quickest way to get started and is free. [Get started with Tokenization](https://www.verygoodsecurity.com/docs/tokenization/getting-started).
+
+    **Zero Data** is a unique method invented by VGS in 2016 that securely stores data like Tokenization, however it also removes the customer’s environment from PCI scope completely providing maximum security, and minimum compliance scope. [Get started with Zero Data](https://www.verygoodsecurity.com/docs/getting-started/before-you-start).
+
+    Additionally, for scenarios where neither technology is a complete solution, for instance with legacy systems, VGS provides a compliance product which guarantees customers are able to meet their compliance needs no matter what may happen. [Get started with Control](https://www.verygoodsecurity.com/docs/control).
+    
+    ## Learn about Tokenization
+    
+    - [Create an Account for Free Tokenization](https://dashboard.verygoodsecurity.com/tokenization)
+    - [Try a Tokenization Demo](https://www.verygoodsecurity.com/docs/tokenization/getting-started)
+    - [Install a Tokenization SDK](https://www.verygoodsecurity.com/docs/tokenization/client-libraries)
+    
+    ### Authentication
+
+    This API uses `Basic` authentication.
+
+    Credentials to access the API can be generated on the
+    [dashboard](https://dashboard.verygoodsecurity.com) by going to the Settings
+    section of the vault of your choosing.
+
+    [Docs » Guides » Access credentials](https://www.verygoodsecurity.com/docs/settings/access-credentials)
+
+    ## Resource Limits
+    
+    ### Data Limits
+    
+    This API allows storing data up to 32MB in size.
+
+    ### Rate Limiting
+
+    The API allows up to 3,000 requests per minute. Requests are associated with
+    the vault, regardless of the access credentials used to authenticate the
+    request.
+
+    Your current rate limit is included as HTTP headers in every API response:
+
+    | Header Name             | Description                                              |
+    |-------------------------|----------------------------------------------------------|
+    | `x-ratelimit-remaining` | The number of requests remaining in the 1-minute window. |
+
+    If you exceed the rate limit, the API will reject the request with HTTP
+    [429 Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429).
+
+    ### Errors
+
+    The API uses standard HTTP status codes to indicate whether the request
+    succeeded or not.
+
+    In case of failure, the response body will be JSON in a predefined format.
+    For example, trying to create too many aliases at once results in the
+    following response:
+
+    ```json
+    {
+        "errors": [
+            {
+                "status": 400,
+                "title": "Bad request",
+                "detail": "Too many values (limit: 20)",
+                "href": "https://api.sandbox.verygoodvault.com/aliases"
+            }
+        ]
+    }
+    ```
+  version: '1.0.0'
+  contact:
+    email: support@verygoodsecurity.com
+  x-logo:
+    url: images/vgs-logo.png
+    href: https://www.verygoodsecurity.com
+    altText: VGS Logo
+
+externalDocs:
+  description: Find out more about VGS
+  url: https://www.verygoodsecurity.com/
+
+servers:
+  - url: https://api.sandbox.verygoodvault.com
+    description: Sandbox
+
+  - url: https://api.live.verygoodvault.com
+    description: Live
+
+  - url: https://api.live-eu-1.verygoodvault.com
+    description: Live EU
+
+tags:
+  - name: aliases
+    x-displayName: Aliases
+    description: |
+      Unique IDs that retain all the essential information about the data
+      without compromising its security.
+
+x-tagGroups:
+  - name: Data Management
+    tags:
+      - aliases
+
+security:
+  - basicAuth: []
+
+paths:
+  /aliases:
+    post:
+      operationId: createAliases
+      tags:
+        - aliases
+      summary: Create aliases
+      description: |
+        Stores multiple values at once & returns their aliases.
+
+        Alternatively, this endpoint may be used to associate additional (i.e.
+        secondary) aliases with the same underlying data as the reference
+        alias specified in the request body.
+
+        **NOTE:** You cannot reference the same alias more than once in a
+        single request.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAliasesRequest'
+            examples:
+              A:
+                summary: Create a new alias
+                value:
+                  data:
+                    - value: 122105155
+                      classifiers:
+                        - bank-account
+                      format: UUID
+                      storage: PERSISTENT
+              B:
+                summary: Reference an existing alias
+                value:
+                  data:
+                    - alias: tok_sandbox_bhtsCwFUzoJMw9rWUfEV5e
+                      format: RAW_UUID
+                      storage: PERSISTENT
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RevealedData'
+                    description: List of stored values along with their aliases.
+        default:
+          $ref: '#/components/responses/ApiErrorsResponse'
+      x-codeSamples:
+        - lang: Shell
+          label: cURL
+          source: |
+            curl https://api.sandbox.verygoodvault.com/aliases \
+             -X POST \
+             -u "$USERNAME:$PASSWORD" \
+             -H 'Content-Type: application/json' \
+             -d '{
+                "data": [
+                {
+                  "value": "test@example.com",
+                  "classifiers": [
+                    "email_address"
+                  ],
+                  "format": "UUID"
+                  "storage": "VOLATILE"
+                }
+                ]
+              }'
+
+    get:
+      operationId: revealMultipleAliases
+      tags:
+        - aliases
+      summary: Reveal multiple aliases
+      description: |
+        Given a list of aliases, retrieves all associated values stored in the
+        vault.
+
+        **NOTE:** This endpoint may expose sensitive data. Therefore, it is
+        disabled by default. To enable it, please contact your VGS account
+        manager or drop us a line at
+        [support@verygoodsecurity.com](mailto:support@verygoodsecurity.com).
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Comma-separated list of aliases to reveal.
+          example:
+            - "tok_sandbox_5UpnbMvaihRuRwz5QXwBFw,tok_sandbox_9ToiJHedw1nE1Jfx1qYYgz"
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    additionalProperties:
+                      x-additionalPropertiesName: alias
+                      $ref: '#/components/schemas/RevealedData'
+                    example:
+                      tok_sandbox_5UpnbMvaihRuRwz5QXwBFw:
+                        value: "476673481"
+                        classifiers:
+                          - bank-account
+                        aliases:
+                          - value: tok_sandbox_5UpnbMvaihRuRwz5QXwBFw
+                            format: UUID
+                        created_at: "2019-08-10T11:45:30Z"
+                        storage: VOLATILE
+                      tok_sandbox_9ToiJHedw1nE1Jfx1qYYgz:
+                        value: "750360025"
+                        classifiers:
+                          - bank-account
+                        aliases:
+                          - value: tok_sandbox_9ToiJHedw1nE1Jfx1qYYgz
+                            format: UUID
+                        created_at: "2019-08-10T11:45:30Z"
+                        storage: VOLATILE
+        default:
+          $ref: '#/components/responses/ApiErrorsResponse'
+      x-codeSamples:
+        - lang: Shell
+          label: cURL
+          source: |
+            curl https://api.sandbox.verygoodvault.com/aliases?q={{alias1}},{{alias2}} \
+             -u "$USERNAME:$PASSWORD"
+
+  /aliases/{alias}:
+    parameters:
+      - $ref: '#/components/parameters/alias'
+    get:
+      operationId: revealAlias
+      tags:
+        - aliases
+      summary: Reveal single alias
+      description: |
+        Retrieves a stored value along with its aliases.
+
+        **NOTE:** This endpoint may expose sensitive data. Therefore, it is
+        disabled by default. To enable it, please contact your VGS account
+        manager or drop us a line at
+        [support@verygoodsecurity.com](mailto:support@verygoodsecurity.com).
+      parameters:
+        - $ref: '#/components/parameters/alias'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/RevealedData'
+                    description: The retrieved value.
+                    minItems: 1
+                    maxItems: 1
+        default:
+          $ref: '#/components/responses/ApiErrorsResponse'
+      x-codeSamples:
+        - lang: Shell
+          label: cURL
+          source: |
+            curl https://api.sandbox.verygoodvault.com/aliases/{{alias}} \
+             -u "$USERNAME:$PASSWORD"
+    put:
+      operationId: updateAlias
+      tags:
+        - aliases
+      summary: Update data classifiers
+      description: |
+        Apply new classifiers to the value that the specified alias is
+        associated with.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAliasRequest'
+      responses:
+        '204':
+          description: No Content
+        default:
+          $ref: '#/components/responses/ApiErrorsResponse'
+      x-codeSamples:
+        - lang: Shell
+          label: cURL
+          source: |
+            curl https://api.sandbox.verygoodvault.com/aliases/{{alias}} \
+             -X PUT \
+             -u "$USERNAME:$PASSWORD" \
+             -H 'Content-Type: application/json' \
+             -d '{
+                "data": {
+                  "classifiers": [
+                    "credit-cards", "PII"
+                  ]
+                }
+              }'
+    delete:
+      operationId: deleteAlias
+      tags:
+        - aliases
+      summary: Delete alias
+      description: |
+        Removes a single alias.
+      parameters:
+        - $ref: '#/components/parameters/alias'
+      responses:
+        '204':
+          description: No Content
+        default:
+          $ref: '#/components/responses/ApiErrorsResponse'
+      x-codeSamples:
+        - lang: Shell
+          label: cURL
+          source: |
+            curl https://api.sandbox.verygoodvault.com/aliases/{{alias}} \
+             -X DELETE \
+             -u "$USERNAME:$PASSWORD"
+
+
+components:
+
+  # See the following links for details:
+  # - https://swagger.io/docs/specification/authentication/basic-authentication/
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: The default authentication schema.
+
+  parameters:
+    alias:
+      name: alias
+      in: path
+      required: true
+      description: Alias to operate on.
+      schema:
+        type: string
+        example: tok_sandbox_bhtsCwFUzoJMw9rWUfEV5e
+
+  responses:
+    ApiErrorsResponse:
+      description: Something went wrong
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ApiError'
+                description: List of errors that occurred while processing the request.
+                minItems: 1
+
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        status:
+          type: integer
+          description: HTTP status code.
+        title:
+          type: string
+          description: High-level reason of why the request failed.
+        detail:
+          type: string
+          description: Explanation of what exactly went wrong.
+        href:
+          type: string
+          description: Request URL.
+
+    RevealedData:
+      type: "object"
+      properties:
+        value:
+          type: "string"
+          description: Decrypted value stored in the vault.
+          example: 122105155
+        classifiers:
+          type: "array"
+          items:
+            type: "string"
+            example: bank-account
+          description: List of tags the value is classified with.
+        aliases:
+          type: "array"
+          items:
+            $ref: '#/components/schemas/Alias'
+          description: List of aliases associated with the value.
+        created_at:
+          type: "string"
+          format: "date-time"
+          description: Creation time, in UTC.
+          example: "2019-05-15T12:30:45Z"
+        storage:
+          type: string
+          enum:
+            - PERSISTENT
+            - VOLATILE
+          default: PERSISTENT
+          description: |
+            Storage medium to use.
+
+            VOLATILE results in data being persisted into an in-memory data store for one hour which is required for PCI compliant storage of card security code data.
+
+    Alias:
+      type: "object"
+      properties:
+        alias:
+          type: "string"
+          example: tok_sandbox_bhtsCwFUzoJMw9rWUfEV5e
+          description: Opaque string used to substitute the raw value.
+        format:
+          $ref: '#/components/schemas/AliasFormat'
+
+    AliasFormat:
+      type: string
+      enum:
+        - FPE_ACC_NUM_T_FOUR
+        - FPE_ALPHANUMERIC_ACC_NUM_T_FOUR
+        - FPE_SIX_T_FOUR
+        - FPE_SSN_T_FOUR
+        - FPE_T_FOUR
+        - NUM_LENGTH_PRESERVING
+        - PFPT
+        - RAW_UUID
+        - UUID
+      description: |
+        Format of the generated alias string.
+
+        See [Alias Formats](#section/Introduction/Alias-Formats) for details.
+      example: UUID
+
+    CreateAliasesRequest:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            oneOf:
+              - $ref: '#/components/schemas/CreateAliasesRequestNew'
+              - $ref: '#/components/schemas/CreateAliasesRequestReference'
+          minItems: 1
+          maxItems: 20
+      required:
+        - data
+
+    CreateAliasesRequestNew:
+      type: object
+      properties:
+        value:
+          type: string
+          description: Raw value to encrypt & store in the vault.
+          example: 122105155
+        classifiers:
+          type: array
+          items:
+            type: string
+            example: bank-account
+          description: List of tags to classify the value with.
+        format:
+          $ref: '#/components/schemas/AliasFormat'
+        storage:
+          type: string
+          enum:
+            - PERSISTENT
+            - VOLATILE
+          default: PERSISTENT
+          description: |
+            Storage medium to use.
+            
+            VOLATILE results in data being persisted into an in-memory data store for one hour which is required for PCI compliant storage of card security code data.
+      required:
+        - value
+        - format
+
+    CreateAliasesRequestReference:
+      type: object
+      properties:
+        alias:
+          type: string
+          description: Existing alias to use as a reference.
+          example: tok_sandbox_bhtsCwFUzoJMw9rWUfEV5e
+        format:
+          $ref: '#/components/schemas/AliasFormat'
+      required:
+        - alias
+        - format
+
+    UpdateAliasRequest:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            classifiers:
+              type: array
+              items:
+                type: string
+                example: bank-account
+              description: List of tags to classify the value with.
+          required:
+            - classifiers
+      required:
+        - data

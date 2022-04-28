@@ -1,5 +1,7 @@
 # vgs-api-client-typescript
 
+[![CircleCI](https://circleci.com/gh/verygoodsecurity/vgs-api-client-typescript.svg?style=svg)](https://github.com/verygoodsecurity/vgs-api-client-typescript)
+
 This repository contains a TypeScript API client library for the Very Good Security API.
 
 ### Requirements
@@ -27,6 +29,10 @@ https://www.verygoodsecurity.com/docs/vault/api/
 ### Tutorial
 
 https://www.verygoodsecurity.com/docs/tokenization/typescript-tutorial
+
+### Artifact
+
+https://www.npmjs.com/package/@vgs/api-client
 
 ### Support
 
