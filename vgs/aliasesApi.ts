@@ -5,6 +5,7 @@ import { RevealedData } from '../model/revealedData';
 import { CreateAliasesRequest } from '../model/createAliasesRequest';
 import { UpdateAliasRequest } from '../model/updateAliasRequest';
 import { UpdateAliasRequestData } from '../model/updateAliasRequestData';
+import { HttpError } from '../api/apis';
 import StorageEnum = RevealedData.StorageEnum;
 
 export class Configuration {
@@ -33,11 +34,35 @@ export class Configuration {
   }
 }
 
-export class ApiError extends Error {
+export class VgsApiError extends Error {
   constructor(msg: string) {
     super(msg);
 
-    Object.setPrototypeOf(this, ApiError.prototype);
+    Object.setPrototypeOf(this, VgsApiError.prototype);
+  }
+}
+
+export class UnauthorizedError extends VgsApiError {
+  constructor(msg: string) {
+    super(msg);
+
+    Object.setPrototypeOf(this, UnauthorizedError.prototype);
+  }
+}
+
+export class NotFoundError extends VgsApiError {
+  constructor(msg: string) {
+    super(msg);
+
+    Object.setPrototypeOf(this, NotFoundError.prototype);
+  }
+}
+
+export class ForbiddenError extends VgsApiError {
+  constructor(msg: string) {
+    super(msg);
+
+    Object.setPrototypeOf(this, ForbiddenError.prototype);
   }
 }
 
@@ -48,9 +73,32 @@ export function config(username: string, password: string, host = 'https://api.s
 export class Aliases {
   private readonly _api;
 
-  constructor(conf: Configuration) {
-    this._api = new AliasesApi(conf.username, conf.password, conf.host);
+  constructor(configuration: Configuration) {
+    if (!configuration) {
+      throw new Error('configuration must be provided');
+    }
+    this._api = new AliasesApi(configuration.username, configuration.password, configuration.host);
     this._api.defaultHeaders = { 'User-Agent': 'vgs-api-client/XXX.YYY.ZZZ/typescript' };
+  }
+
+  private static mapException(message, error) {
+    let errorMessage = message;
+    let vgsApiError = new VgsApiError(errorMessage);
+    if (error instanceof HttpError) {
+      errorMessage += `. Details: ${error.message}`;
+      switch (error.statusCode) { // eslint-disable-line default-case
+        case 401:
+          vgsApiError = new UnauthorizedError(errorMessage);
+          break;
+        case 403:
+          vgsApiError = new ForbiddenError(errorMessage);
+          break;
+        case 404:
+          vgsApiError = new NotFoundError(errorMessage);
+          break;
+      }
+    }
+    return vgsApiError;
   }
 
   public async redact(data) {
@@ -65,8 +113,8 @@ export class Aliases {
     });
     const request = new CreateAliasesRequest();
     request.data = createAliasRequests;
-    return this._api.createAliases(request).then((response) => response.body!.data!).catch(() => {
-      throw new ApiError(`Failed to redact data ${data}`);
+    return this._api.createAliases(request).then((response) => response.body!.data!).catch((e) => {
+      throw Aliases.mapException(`Failed to redact data ${JSON.stringify(data, null, 2)}`, e);
     });
   }
 
@@ -76,8 +124,8 @@ export class Aliases {
 
     return this._api.revealMultipleAliases(query).then(
       (response) => response.body!.data!,
-    ).catch(() => {
-      throw new ApiError(`Failed to reveal aliases ${aliases}`);
+    ).catch((e) => {
+      throw Aliases.mapException(`Failed to reveal aliases ${JSON.stringify(aliases, null, 2)}`, e);
     });
   }
 
@@ -85,14 +133,14 @@ export class Aliases {
     const updateRequest = new UpdateAliasRequest();
     updateRequest.data = new UpdateAliasRequestData();
     updateRequest.data.classifiers = data.classifiers;
-    return this._api.updateAlias(alias, updateRequest).catch(() => {
-      throw new ApiError(`Failed to update alias ${alias}`);
+    return this._api.updateAlias(alias, updateRequest).catch((e) => {
+      throw Aliases.mapException(`Failed to update alias ${JSON.stringify(alias, null, 2)}`, e);
     });
   }
 
   public async delete(alias) {
-    return this._api.deleteAlias(alias).catch(() => {
-      throw new ApiError(`Failed to delete alias ${alias}`);
+    return this._api.deleteAlias(alias).catch((e) => {
+      throw Aliases.mapException(`Failed to delete alias ${JSON.stringify(alias, null, 2)}`, e);
     });
   }
 }
