@@ -9,6 +9,42 @@ describe("aliasesAPI", () => {
     api = new VGS.Aliases(_config);
   });
 
+  describe("Invalid auth", () => {
+    test("should fail if invalid auth provided", async () => {
+      let _config = VGS.config('Invalid', 'Invalid')
+      api = new VGS.Aliases(_config);
+      let data = [{
+        "format": "UUID",
+        "value": "Joe Doe",
+      }]
+
+      await expect(api.redact(data)).rejects.toThrow(VGS.UnauthorizedError)
+    })
+  });
+
+  describe("Invalid config", () => {
+    test("should fail if no config provided", () => {
+      expect(() => {
+        new VGS.Aliases(null)
+      }).toThrow(Error)
+    })
+  });
+
+  describe("Invalid host", () => {
+    test("should fail if invalid host provided", async () => {
+      let _config = VGS.config(
+          process.env.VAULT_API_USERNAME!,
+          process.env.VAULT_API_PASSWORD!,
+          'https://echo.apps.verygood.systems')
+      api = new VGS.Aliases(_config);
+      let data = [{
+        "format": "UUID",
+        "value": "Joe Doe",
+      }]
+
+      await expect(api.redact(data)).rejects.toThrow(VGS.NotFoundError)
+    })
+  });
 
   describe("Redact", () => {
     test("should redact", async () => {
@@ -64,7 +100,6 @@ describe("aliasesAPI", () => {
       expect(new Set(originalValues)).toEqual(new Set(revealedValues));
     })
   });
-
 
   describe("Update", () => {
     test("should update", async () => {

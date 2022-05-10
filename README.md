@@ -16,11 +16,11 @@ npm install @vgs/api-client
 
 ### Development
 
-Follow [DEVELOPMENT](DEVELOPMENT.md) instruction.
+Follow [DEVELOPMENT](https://github.com/verygoodsecurity/vgs-api-client-typescript/blob/master/DEVELOPMENT.md) instruction.
 
 ### Release
 
-Follow [RELEASE](RELEASE.md) instruction.
+Follow [RELEASE](https://github.com/verygoodsecurity/vgs-api-client-typescript/blob/master/RELEASE.md) instruction.
 
 ### Documentation
 
