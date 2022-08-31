@@ -29,8 +29,8 @@ services:
       context: .
       dockerfile: scripts/test/Dockerfile
     environment:
-      VAULT_API_USERNAME: US7oyrzRGmaKqi3ET8eSsECS
-      VAULT_API_PASSWORD: c06cf6d1-a35e-439d-91d1-8bd04e5fd9e5
+      VAULT_API_USERNAME: $VAULT_API_USERNAME
+      VAULT_API_PASSWORD: $VAULT_API_PASSWORD
       VAULT_API_BASE_URI: https://api.sandbox.verygoodvault.com
       VAULT_API_VAULT_ID: tntkxfmsefj
       LIB_VERSION: ${LIB_VERSION}
@@ -39,8 +39,8 @@ services:
       context: .
       dockerfile: scripts/test-e2e/Dockerfile
     environment:
-      VAULT_API_USERNAME: US7oyrzRGmaKqi3ET8eSsECS
-      VAULT_API_PASSWORD: c06cf6d1-a35e-439d-91d1-8bd04e5fd9e5
+      VAULT_API_USERNAME: $VAULT_API_USERNAME
+      VAULT_API_PASSWORD: $VAULT_API_PASSWORD
       VAULT_API_BASE_URI: https://api.sandbox.verygoodvault.com
       VAULT_API_VAULT_ID: tntkxfmsefj
       LIB_VERSION: ${LIB_VERSION}
