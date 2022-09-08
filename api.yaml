@@ -26,7 +26,7 @@ info:
     
     ### Authentication
 
-    This API uses `Basic` authentication.
+    This API uses `Basic` authentication and is implemented using industry best practices to ensure the security of the connection. Read more about [Identity and Access Management at VGS](https://www.verygoodsecurity.com/docs/vault/the-platform/iam)
 
     Credentials to access the API can be generated on the
     [dashboard](https://dashboard.verygoodsecurity.com) by going to the Settings
