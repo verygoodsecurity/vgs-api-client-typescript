@@ -53,7 +53,9 @@ workflows:
               only: /^\d+\.\d+\.\d+$/
 
       - test-local:
-          context: circleci
+          context:
+            - circleci
+            - vgs-api-client-sdk
           filters:
             branches:
               only: /.*/
@@ -61,7 +63,9 @@ workflows:
               only: /^\d+\.\d+\.\d+$/
 
       - test-e2e:
-          context: circleci
+          context:
+            - circleci
+            - vgs-api-client-sdk
           requires:
             - test-local
             - lint
