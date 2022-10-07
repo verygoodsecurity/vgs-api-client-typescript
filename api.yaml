@@ -26,7 +26,7 @@ info:
     
     ### Authentication
 
-    This API uses `Basic` authentication.
+    This API uses `Basic` authentication and is implemented using industry best practices to ensure the security of the connection. Read more about [Identity and Access Management at VGS](https://www.verygoodsecurity.com/docs/vault/the-platform/iam)
 
     Credentials to access the API can be generated on the
     [dashboard](https://dashboard.verygoodsecurity.com) by going to the Settings
@@ -450,10 +450,13 @@ components:
         - FPE_SIX_T_FOUR
         - FPE_SSN_T_FOUR
         - FPE_T_FOUR
+        - GENERIC_T_FOUR
+        - NON_LUHN_FPE_ALPHANUMERIC
         - NUM_LENGTH_PRESERVING
         - PFPT
         - RAW_UUID
         - UUID
+        - VGS_FIXED_LEN_GENERIC
       description: |
         Format of the generated alias string.
 
