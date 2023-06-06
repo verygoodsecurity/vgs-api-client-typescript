@@ -11,13 +11,13 @@
  */
 
 import { RequestFile } from './models';
-import { RevealedData } from './revealedData';
 
-export class InlineResponse201 {
-    /**
-    * List of stored values along with their aliases.
-    */
-    'data'?: Array<RevealedData>;
+/**
+* Format for batch requests (limit 20) 
+*/
+export class BatchAliasesRequest {
+    'data'?: Array<string>;
+    'storage'?: BatchAliasesRequest.StorageEnum;
 
     static discriminator: string | undefined = undefined;
 
@@ -25,11 +25,22 @@ export class InlineResponse201 {
         {
             "name": "data",
             "baseName": "data",
-            "type": "Array<RevealedData>"
+            "type": "Array<string>"
+        },
+        {
+            "name": "storage",
+            "baseName": "storage",
+            "type": "BatchAliasesRequest.StorageEnum"
         }    ];
 
     static getAttributeTypeMap() {
-        return InlineResponse201.attributeTypeMap;
+        return BatchAliasesRequest.attributeTypeMap;
     }
 }
 
+export namespace BatchAliasesRequest {
+    export enum StorageEnum {
+        PERSISTENT = <any> 'PERSISTENT',
+        VOLATILE = <any> 'VOLATILE'
+    }
+}

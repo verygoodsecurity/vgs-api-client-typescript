@@ -11,25 +11,31 @@
  */
 
 import { RequestFile } from './models';
-import { RevealedData } from './revealedData';
+import { AliasFormat } from './aliasFormat';
 
-export class InlineResponse201 {
+export class AliasDto {
     /**
-    * List of stored values along with their aliases.
+    * Opaque string used to substitute the raw value.
     */
-    'data'?: Array<RevealedData>;
+    'alias'?: string;
+    'format'?: AliasFormat | null;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "data",
-            "baseName": "data",
-            "type": "Array<RevealedData>"
+            "name": "alias",
+            "baseName": "alias",
+            "type": "string"
+        },
+        {
+            "name": "format",
+            "baseName": "format",
+            "type": "AliasFormat"
         }    ];
 
     static getAttributeTypeMap() {
-        return InlineResponse201.attributeTypeMap;
+        return AliasDto.attributeTypeMap;
     }
 }
 

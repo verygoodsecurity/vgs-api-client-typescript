@@ -1,6 +1,6 @@
 /**
  * Vault HTTP API
- * The VGS Vault HTTP API is used for storing, retrieving, and managing sensitive data (aka Tokenization) within a VGS Vault.  The VGS API is organized around REST. Our API is built with a predictable resource-oriented structure, uses JSON-encoded requests and responses, follows standard HTTP verbs/responses, and uses industry standard authentication.  ## What is VGS  Storing sensitive data on your company’s infrastructure often comes with a heavy compliance burden. For instance, storing payments data yourself greatly increases the amount of work needed to become PCI compliant. It also increases your security risk in general. To combat this, companies will minimize the amount of sensitive information they have to handle or store.  VGS provides multiple methods for minimizing the sensitive information that needs to be stored which allows customers to secure any type of data for any use-case.  **Tokenization** is a method that focuses on securing the storage of data. This is the quickest way to get started and is free. [Get started with Tokenization](https://www.verygoodsecurity.com/docs/tokenization/getting-started).  **Zero Data** is a unique method invented by VGS in 2016 that securely stores data like Tokenization, however it also removes the customer’s environment from PCI scope completely providing maximum security, and minimum compliance scope. [Get started with Zero Data](https://www.verygoodsecurity.com/docs/getting-started/before-you-start).  Additionally, for scenarios where neither technology is a complete solution, for instance with legacy systems, VGS provides a compliance product which guarantees customers are able to meet their compliance needs no matter what may happen. [Get started with Control](https://www.verygoodsecurity.com/docs/control).  ## Learn about Tokenization  - [Create an Account for Free Tokenization](https://dashboard.verygoodsecurity.com/tokenization) - [Try a Tokenization Demo](https://www.verygoodsecurity.com/docs/tokenization/getting-started) - [Install a Tokenization SDK](https://www.verygoodsecurity.com/docs/tokenization/client-libraries)  ### Authentication  This API uses `Basic` authentication.  Credentials to access the API can be generated on the [dashboard](https://dashboard.verygoodsecurity.com) by going to the Settings section of the vault of your choosing.  [Docs » Guides » Access credentials](https://www.verygoodsecurity.com/docs/settings/access-credentials)  ## Resource Limits  ### Data Limits  This API allows storing data up to 32MB in size.  ### Rate Limiting  The API allows up to 3,000 requests per minute. Requests are associated with the vault, regardless of the access credentials used to authenticate the request.  Your current rate limit is included as HTTP headers in every API response:  | Header Name             | Description                                              | |-------------------------|----------------------------------------------------------| | `x-ratelimit-remaining` | The number of requests remaining in the 1-minute window. |  If you exceed the rate limit, the API will reject the request with HTTP [429 Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429).  ### Errors  The API uses standard HTTP status codes to indicate whether the request succeeded or not.  In case of failure, the response body will be JSON in a predefined format. For example, trying to create too many aliases at once results in the following response:  ```json {     \"errors\": [         {             \"status\": 400,             \"title\": \"Bad request\",             \"detail\": \"Too many values (limit: 20)\",             \"href\": \"https://api.sandbox.verygoodvault.com/aliases\"         }     ] } ``` 
+ * The VGS Vault HTTP API is used for storing, retrieving, and managing sensitive data (aka Tokenization) within a VGS Vault.  The VGS API is organized around REST. Our API is built with a predictable resource-oriented structure, uses JSON-encoded requests and responses, follows standard HTTP verbs/responses, and uses industry standard authentication.  ## What is VGS  Storing sensitive data on your company’s infrastructure often comes with a heavy compliance burden. For instance, storing payments data yourself greatly increases the amount of work needed to become PCI compliant. It also increases your security risk in general. To combat this, companies will minimize the amount of sensitive information they have to handle or store.  VGS provides multiple methods for minimizing the sensitive information that needs to be stored which allows customers to secure any type of data for any use-case.  **Tokenization** is a method that focuses on securing the storage of data. This is the quickest way to get started and is free. [Get started with Tokenization](https://www.verygoodsecurity.com/docs/tokenization/getting-started).  **Zero Data** is a unique method invented by VGS in 2016 that securely stores data like Tokenization, however it also removes the customer’s environment from PCI scope completely providing maximum security, and minimum compliance scope. [Get started with Zero Data](https://www.verygoodsecurity.com/docs/getting-started/before-you-start).  Additionally, for scenarios where neither technology is a complete solution, for instance with legacy systems, VGS provides a compliance product which guarantees customers are able to meet their compliance needs no matter what may happen. [Get started with Control](https://www.verygoodsecurity.com/docs/control).  ## Learn about Tokenization  - [Create an Account for Free Tokenization](https://dashboard.verygoodsecurity.com/tokenization) - [Try a Tokenization Demo](https://www.verygoodsecurity.com/docs/tokenization/getting-started) - [Install a Tokenization SDK](https://www.verygoodsecurity.com/docs/tokenization/client-libraries)  ### Authentication  This API uses `Basic` authentication and is implemented using industry best practices to ensure the security of the connection. Read more about [Identity and Access Management at VGS](https://www.verygoodsecurity.com/docs/vault/the-platform/iam)  Credentials to access the API can be generated on the [dashboard](https://dashboard.verygoodsecurity.com) by going to the Settings section of the vault of your choosing.  [Docs » Guides » Access credentials](https://www.verygoodsecurity.com/docs/settings/access-credentials)  ## Resource Limits  ### Data Limits  This API allows storing data up to 32MB in size.  ### Rate Limiting  The API allows up to 3,000 requests per minute. Requests are associated with the vault, regardless of the access credentials used to authenticate the request.  Your current rate limit is included as HTTP headers in every API response:  | Header Name             | Description                                              | |-------------------------|----------------------------------------------------------| | `x-ratelimit-remaining` | The number of requests remaining in the 1-minute window. |  If you exceed the rate limit, the API will reject the request with HTTP [429 Too Many Requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429).  ### Errors  The API uses standard HTTP status codes to indicate whether the request succeeded or not.  In case of failure, the response body will be JSON in a predefined format. For example, trying to create too many aliases at once results in the following response:  ```json {     \"errors\": [         {             \"status\": 400,             \"title\": \"Bad request\",             \"detail\": \"Too many values (limit: 20)\",             \"href\": \"https://api.sandbox.verygoodvault.com/aliases\"         }     ] } ``` 
  *
  * The version of the OpenAPI document: 1.0.0
  * Contact: support@verygoodsecurity.com
@@ -175,8 +175,9 @@ export class AliasesApi {
      * Removes a single alias. 
      * @summary Delete alias
      * @param alias Alias to operate on.
+     * @param storage 
      */
-    public async deleteAlias (alias: string, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body?: any;  }> {
+    public async deleteAlias (alias: string, storage?: 'PERSISTENT' | 'VOLATILE', options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body?: any;  }> {
         const localVarPath = this.basePath + '/aliases/{alias}'
             .replace('{' + 'alias' + '}', encodeURIComponent(String(alias)));
         let localVarQueryParameters: any = {};
@@ -193,6 +194,10 @@ export class AliasesApi {
         // verify required parameter 'alias' is not null or undefined
         if (alias === null || alias === undefined) {
             throw new Error('Required parameter alias was null or undefined when calling deleteAlias.');
+        }
+
+        if (storage !== undefined) {
+            localVarQueryParameters['storage'] = ObjectSerializer.serialize(storage, "'PERSISTENT' | 'VOLATILE'");
         }
 
         (<any>Object).assign(localVarHeaderParams, options.headers);
@@ -246,8 +251,9 @@ export class AliasesApi {
      * Retrieves a stored value along with its aliases.  **NOTE:** This endpoint may expose sensitive data. Therefore, it is disabled by default. To enable it, please contact your VGS account manager or drop us a line at [support@verygoodsecurity.com](mailto:support@verygoodsecurity.com). 
      * @summary Reveal single alias
      * @param alias Alias to operate on.
+     * @param storage 
      */
-    public async revealAlias (alias: string, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: InlineResponse2001;  }> {
+    public async revealAlias (alias: string, storage?: 'PERSISTENT' | 'VOLATILE', options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: InlineResponse2001;  }> {
         const localVarPath = this.basePath + '/aliases/{alias}'
             .replace('{' + 'alias' + '}', encodeURIComponent(String(alias)));
         let localVarQueryParameters: any = {};
@@ -264,6 +270,10 @@ export class AliasesApi {
         // verify required parameter 'alias' is not null or undefined
         if (alias === null || alias === undefined) {
             throw new Error('Required parameter alias was null or undefined when calling revealAlias.');
+        }
+
+        if (storage !== undefined) {
+            localVarQueryParameters['storage'] = ObjectSerializer.serialize(storage, "'PERSISTENT' | 'VOLATILE'");
         }
 
         (<any>Object).assign(localVarHeaderParams, options.headers);
@@ -317,9 +327,10 @@ export class AliasesApi {
     /**
      * Given a list of aliases, retrieves all associated values stored in the vault.  **NOTE:** This endpoint may expose sensitive data. Therefore, it is disabled by default. To enable it, please contact your VGS account manager or drop us a line at [support@verygoodsecurity.com](mailto:support@verygoodsecurity.com). 
      * @summary Reveal multiple aliases
-     * @param q Comma-separated list of aliases to reveal.
+     * @param aliases Comma-separated list of aliases to reveal.
+     * @param storage PERSISTENT or VOLATILE storage
      */
-    public async revealMultipleAliases (q: string, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: InlineResponse200;  }> {
+    public async revealMultipleAliases (aliases: string, storage?: string, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body: InlineResponse200;  }> {
         const localVarPath = this.basePath + '/aliases';
         let localVarQueryParameters: any = {};
         let localVarHeaderParams: any = (<any>Object).assign({}, this._defaultHeaders);
@@ -332,13 +343,17 @@ export class AliasesApi {
         }
         let localVarFormParams: any = {};
 
-        // verify required parameter 'q' is not null or undefined
-        if (q === null || q === undefined) {
-            throw new Error('Required parameter q was null or undefined when calling revealMultipleAliases.');
+        // verify required parameter 'aliases' is not null or undefined
+        if (aliases === null || aliases === undefined) {
+            throw new Error('Required parameter aliases was null or undefined when calling revealMultipleAliases.');
         }
 
-        if (q !== undefined) {
-            localVarQueryParameters['q'] = ObjectSerializer.serialize(q, "string");
+        if (aliases !== undefined) {
+            localVarQueryParameters['aliases'] = ObjectSerializer.serialize(aliases, "string");
+        }
+
+        if (storage !== undefined) {
+            localVarQueryParameters['storage'] = ObjectSerializer.serialize(storage, "string");
         }
 
         (<any>Object).assign(localVarHeaderParams, options.headers);
@@ -393,9 +408,10 @@ export class AliasesApi {
      * Apply new classifiers to the value that the specified alias is associated with. 
      * @summary Update data classifiers
      * @param alias Alias to operate on.
+     * @param storage 
      * @param updateAliasRequest 
      */
-    public async updateAlias (alias: string, updateAliasRequest?: UpdateAliasRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body?: any;  }> {
+    public async updateAlias (alias: string, storage?: 'PERSISTENT' | 'VOLATILE', updateAliasRequest?: UpdateAliasRequest, options: {headers: {[name: string]: string}} = {headers: {}}) : Promise<{ response: http.IncomingMessage; body?: any;  }> {
         const localVarPath = this.basePath + '/aliases/{alias}'
             .replace('{' + 'alias' + '}', encodeURIComponent(String(alias)));
         let localVarQueryParameters: any = {};
@@ -412,6 +428,10 @@ export class AliasesApi {
         // verify required parameter 'alias' is not null or undefined
         if (alias === null || alias === undefined) {
             throw new Error('Required parameter alias was null or undefined when calling updateAlias.');
+        }
+
+        if (storage !== undefined) {
+            localVarQueryParameters['storage'] = ObjectSerializer.serialize(storage, "'PERSISTENT' | 'VOLATILE'");
         }
 
         (<any>Object).assign(localVarHeaderParams, options.headers);

@@ -1,5 +1,7 @@
 export * from './aliasesApi';
 import { AliasesApi } from './aliasesApi';
+export * from './defaultApi';
+import { DefaultApi } from './defaultApi';
 import * as http from 'http';
 
 export class HttpError extends Error {
@@ -11,4 +13,4 @@ export class HttpError extends Error {
 
 export { RequestFile } from '../model/models';
 
-export const APIS = [AliasesApi];
+export const APIS = [AliasesApi, DefaultApi];
