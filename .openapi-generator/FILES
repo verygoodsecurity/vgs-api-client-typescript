@@ -3,9 +3,10 @@ api.ts
 api/aliasesApi.ts
 api/apis.ts
 git_push.sh
-model/alias.ts
+model/aliasDto.ts
 model/aliasFormat.ts
 model/apiError.ts
+model/batchAliasesRequest.ts
 model/createAliasesRequest.ts
 model/createAliasesRequestNew.ts
 model/createAliasesRequestReference.ts
