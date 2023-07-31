@@ -1,8 +1,9 @@
 import localVarRequest from 'request';
 
-export * from './alias';
+export * from './aliasDto';
 export * from './aliasFormat';
 export * from './apiError';
+export * from './batchAliasesRequest';
 export * from './createAliasesRequest';
 export * from './createAliasesRequestNew';
 export * from './createAliasesRequestReference';
@@ -27,9 +28,10 @@ export interface RequestDetailedFile {
 export type RequestFile = string | Buffer | fs.ReadStream | RequestDetailedFile;
 
 
-import { Alias } from './alias';
+import { AliasDto } from './aliasDto';
 import { AliasFormat } from './aliasFormat';
 import { ApiError } from './apiError';
+import { BatchAliasesRequest } from './batchAliasesRequest';
 import { CreateAliasesRequest } from './createAliasesRequest';
 import { CreateAliasesRequestNew } from './createAliasesRequestNew';
 import { CreateAliasesRequestReference } from './createAliasesRequestReference';
@@ -55,13 +57,15 @@ let primitives = [
 
 let enumsMap: {[index: string]: any} = {
         "AliasFormat": AliasFormat,
+        "BatchAliasesRequest.StorageEnum": BatchAliasesRequest.StorageEnum,
         "CreateAliasesRequestNew.StorageEnum": CreateAliasesRequestNew.StorageEnum,
         "RevealedData.StorageEnum": RevealedData.StorageEnum,
 }
 
 let typeMap: {[index: string]: any} = {
-    "Alias": Alias,
+    "AliasDto": AliasDto,
     "ApiError": ApiError,
+    "BatchAliasesRequest": BatchAliasesRequest,
     "CreateAliasesRequest": CreateAliasesRequest,
     "CreateAliasesRequestNew": CreateAliasesRequestNew,
     "CreateAliasesRequestReference": CreateAliasesRequestReference,
