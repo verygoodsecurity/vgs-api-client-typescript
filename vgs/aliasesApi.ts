@@ -133,7 +133,7 @@ export class Aliases {
     const updateRequest = new UpdateAliasRequest();
     updateRequest.data = new UpdateAliasRequestData();
     updateRequest.data.classifiers = data.classifiers;
-    return this._api.updateAlias(alias, updateRequest).catch((e) => {
+    return this._api.updateAlias(alias, 'PERSISTENT', updateRequest).catch((e) => {
       throw Aliases.mapException(`Failed to update alias ${JSON.stringify(alias, null, 2)}`, e);
     });
   }
