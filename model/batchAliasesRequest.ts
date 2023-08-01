@@ -11,25 +11,36 @@
  */
 
 import { RequestFile } from './models';
-import { ApiError } from './apiError';
 
-export class InlineResponseDefault {
-    /**
-    * List of errors that occurred while processing the request.
-    */
-    'errors'?: Array<ApiError>;
+/**
+* Format for batch requests (limit 20) 
+*/
+export class BatchAliasesRequest {
+    'data'?: Array<string>;
+    'storage'?: BatchAliasesRequest.StorageEnum;
 
     static discriminator: string | undefined = undefined;
 
     static attributeTypeMap: Array<{name: string, baseName: string, type: string}> = [
         {
-            "name": "errors",
-            "baseName": "errors",
-            "type": "Array<ApiError>"
+            "name": "data",
+            "baseName": "data",
+            "type": "Array<string>"
+        },
+        {
+            "name": "storage",
+            "baseName": "storage",
+            "type": "BatchAliasesRequest.StorageEnum"
         }    ];
 
     static getAttributeTypeMap() {
-        return InlineResponseDefault.attributeTypeMap;
+        return BatchAliasesRequest.attributeTypeMap;
     }
 }
 
+export namespace BatchAliasesRequest {
+    export enum StorageEnum {
+        PERSISTENT = <any> 'PERSISTENT',
+        VOLATILE = <any> 'VOLATILE'
+    }
+}
