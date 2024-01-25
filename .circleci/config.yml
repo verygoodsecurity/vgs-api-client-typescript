@@ -2,8 +2,8 @@ job-defaults: &job-defaults
   working_directory: &working_directory
     ~/product
   machine:
-    image: ubuntu-2004:202104-01
-    docker_layer_caching: true
+    image: ubuntu-2204:2023.10.1
+    docker_layer_caching: false
 
 version: 2
 
